@@ -4,17 +4,17 @@ use lib './blib/lib', './blib/arch';
 use Lingua::Ident;
 
 $ident = new Lingua::Ident('data/data.de', 'data/data.en', 'data/data.it',
-			 'data/data.fr', 'data/data.ko');
+			   'data/data.fr', 'data/data.ko', 'data/data.zh');
 $sample = "";
 
 READ: while(<>)
 {
    chomp;
-   $line = $_;
-   
-   if(length($sample) < 20)
+
+   if(length($sample) < 128)
    {
-      $sample .= $line;
+      $sample .= $_ . ' ';
+      $sample =~ s/\s+/ /og;
    }
    else
    {
@@ -24,4 +24,4 @@ READ: while(<>)
 }
 
 $lang = $ident->identify($sample);
-print "Language:  $lang\n";
+print "Language: $lang\n";

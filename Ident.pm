@@ -1,4 +1,4 @@
-# $Id: Ident.pm,v 1.2 2000/02/27 12:50:52 mxp Exp $
+# $Id: Ident.pm 1.4 Sun, 18 Nov 2001 23:26:28 +0100 mxp $
 # Copyright © 2000 Michael Piotrowski.  All Rights Reserved.
 
 =head1 NAME
@@ -36,10 +36,11 @@ B<de_DE.iso88591>.
 
 package Lingua::Ident;
 
-$VERSION = "1.0";
+# $Format: "$VERSION='$ProjectVersion$';"$
+$VERSION='1.4';
 
 use Carp;
-use locale;
+# use locale;
 use strict;
 
 sub new
@@ -48,7 +49,7 @@ sub new
     my @files = @_;
     my $self  = {};
 
-    my ($filename, $matrix, @matrices, @languages) ;
+    my ($filename, $matrix, @matrices, @languages, %bigrams, @bigrams) ;
 
     foreach $filename (@files)
     {
@@ -59,19 +60,27 @@ sub new
 	while(<MATRIX>)
 	{
 	    chomp;
-	    (my $key, my $val) = split(/: /);
-	    
-	    $matrix->{$key} = $val;
+
+	    if (/:/)
+	    {
+	       (my $key, my $val) = split(/:/);
+	       $matrix->{$key} = $val;
+	    }
+	    elsif (/;/)
+	    {
+	       (my $key, my $val) = split(/;/);
+	       $bigrams{$key} = $val;
+	    }
 	}
 	push @matrices,  $matrix;
 	push @languages, $matrix->{'_LANG'};
-
+	push @bigrams,   \%bigrams;
 	close MATRIX;
     }
     
     $self->{MATRICES}  = \@matrices;
     $self->{LANGUAGES} = \@languages;
-    
+    $self->{BIGRAMS}   = \@bigrams;
     return bless $self, $class;
 }
 
@@ -81,6 +90,7 @@ sub identify
     my $text = shift;
 
     my @matrices = @{$self->{MATRICES}};
+    my @bigrams  = @{$self->{BIGRAMS}};
     my @prob = (0) x @matrices;
     my ($c, $i, @chars, $trigram);
 
@@ -89,8 +99,10 @@ sub identify
 	push @chars, $c;
 	if(@chars == 3)
 	{
-	    $trigram = lc(join("", @chars));
-	    $trigram =~ s/[\d\W]/ /og;
+	   $trigram = lc(join("", @chars));
+	   #$trigram = join("", @chars);
+	    # $trigram =~ s/[\d\W]/ /og;
+	    $trigram =~ s/[\x00-\x1f\x21-\x40\x7b-\x7f]/ /og;
 
 	    for($i = 0; $i <= $#matrices; $i++)
 	    {
@@ -100,7 +112,16 @@ sub identify
 		}
 		else
 		{
-		    $prob[$i] += log $matrices[$i]->{'_NULL'};
+		   # $prob[$i] += log $matrices[$i]->{'_NULL'};
+		   if (exists $bigrams[$i]->{substr($trigram, 0, 2)})
+		   {
+		      $prob[$i] +=
+			  log (1 / $bigrams[$i]->{substr($trigram, 0, 2)});
+		   }
+		   else
+		   {
+		      $prob[$i] += log (1 / $matrices[$i]->{'#ALPH'});
+		   }
 		}
 	    }
 	    shift @chars;

@@ -8,6 +8,13 @@ data/sample.en
 data/sample.fr
 data/sample.it
 data/sample.ko
+data/sample.zh
+samples/sample.de
+samples/sample.en
+samples/sample.fr
+samples/sample.it
+samples/sample.ko
+samples/sample.zh
 liddemo
 test.pl
 trainlid

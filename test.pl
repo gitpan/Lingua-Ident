@@ -19,10 +19,10 @@ print "ok 1\n";
 # of the test code):
 
 $ident = new Lingua::Ident('data/data.de', 'data/data.en', 'data/data.it',
-			 'data/data.fr', 'data/data.ko');
+			   'data/data.fr', 'data/data.ko', 'data/data.zh');
 
 $lang = $ident->identify("Ein Beamter geht zu den drei Männern.");
-if($lang eq "de_DE.iso88591")
+if($lang eq "de.iso88591")
 {
    print "ok 2\n";
 }
