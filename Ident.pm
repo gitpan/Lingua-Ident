@@ -37,7 +37,7 @@ B<de_DE.iso88591>.
 package Lingua::Ident;
 
 # $Format: "$VERSION='$ProjectVersion$';"$
-$VERSION='1.4';
+$VERSION='1.5';
 
 use Carp;
 # use locale;
