@@ -1,0 +1,82 @@
+#! /opt/perl5/bin/perl -w
+# $Id: trainlid,v 1.2 2000/02/27 12:51:15 mxp Exp $
+# Copyright © 2000 Michael Piotrowski.  All Rights Reserved.
+
+=head1 NAME
+
+trainlid - build transition matrix for Lingua::Ident module
+
+=head1 SYNOPSIS
+
+B<trainlid> I<language_name> < I<training_text> > I<matrix_file>
+
+=head1 DESCRIPTION
+
+B<trainlid> builds a trigram transition matrix for use with the
+B<Lingua::Ident> module.  It reads a training text from standard input
+and outputs a transition matrix with the specified I<language_name> as
+identifier to standard output.
+
+It is recommended that I<language_name> be a POSIX locale name
+constructed from an ISO 639 2-letter language code, possibly extended
+by an ISO 3166 2-letter country code and a character set
+identifier. Example: B<de_DE.iso88591>.
+
+=head1 AUTHOR
+
+B<trainlid> was developed by Michael Piotrowski <mxp@dynalabs.de>.
+
+=head1 SEE ALSO
+
+Lingua::Ident(3)
+
+=cut
+
+require 5.004;
+use locale;
+
+while(defined($c = getc))
+{
+    $c =~ s/[\d\W]/ /og;
+    $c = lc($c);
+    push @chars, $c;
+
+    $alphabet{$c} = "";
+
+    $nc++;
+
+    if(@chars == 3)
+    {
+	$trigram = join("", @chars);
+	$matrix{$trigram}++;
+
+	$bigram  = substr($trigram, 0, 2);
+	$bigrams{$bigram}++;
+
+	shift @chars;
+    }
+}
+
+
+$size_of_alphabet = keys(%alphabet);
+print STDERR "alphabet: ", sort(keys(%alphabet)), "\n";
+undef %alphabet;
+
+while(($trigram, $count) = each(%matrix))
+{
+    $prob = ($count + 1)/
+	($bigrams{substr($trigram, 0, 2)} + $size_of_alphabet);
+
+    $matrix{$trigram} = $prob;
+}
+
+print "_LANG: ", $ARGV[0], "\n";
+print "_NULL: ", 1 / $size_of_alphabet, "\n";
+
+while(($key, $val) = each(%matrix))
+{
+    print "$key: $val\n";
+}
+
+print STDERR "size of alphabet: $size_of_alphabet\n";
+print STDERR "chars total: $nc\n";

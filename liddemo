@@ -1,0 +1,27 @@
+#! /opt/perl5/bin/perl -w
+
+use lib './blib/lib', './blib/arch';
+use Lingua::Ident;
+
+$ident = new Lingua::Ident('data/data.de', 'data/data.en', 'data/data.it',
+			 'data/data.fr', 'data/data.ko');
+$sample = "";
+
+READ: while(<>)
+{
+   chomp;
+   $line = $_;
+   
+   if(length($sample) < 20)
+   {
+      $sample .= $line;
+   }
+   else
+   {
+      $lang = $ident->identify($sample);
+      last READ;
+   }
+}
+
+$lang = $ident->identify($sample);
+print "Language:  $lang\n";
