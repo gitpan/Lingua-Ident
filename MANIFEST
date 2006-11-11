@@ -16,6 +16,8 @@ samples/sample.it
 samples/sample.ko
 samples/sample.zh
 liddemo
-test.pl
+t/00_load.t
+t/01_basic.t
+t/02_bench.t
 trainlid
 META.yml                                 Module meta-data (added by MakeMaker)

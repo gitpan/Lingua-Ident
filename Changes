@@ -5,3 +5,12 @@ Revision history for Perl extension Lingua::Ident.
 
 1.4   Sun Nov 18 23:20:15 MET 2001
 	- Maintenance release, fixing several grave bugs
+
+1.5   Tue Dec 21 13:49:17 CET 2004
+	- Fixed Makefile.PL
+
+1.6   Sat Nov 11 18:15:19 CET 2006
+	- Fixed a bug in the loading of bigrams, reported by James Shaw
+	- Moved tests to t/ subdirectory
+	- Added a benchmark-type test
+
