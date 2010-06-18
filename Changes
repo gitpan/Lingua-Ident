@@ -14,3 +14,14 @@ Revision history for Perl extension Lingua::Ident.
 	- Moved tests to t/ subdirectory
 	- Added a benchmark-type test
 
+1.7   Fri May 14 15:38:04 CEST 2010
+	- Tests now work with the data files located at either ../data
+	  or data.
+	- The make test now always generates the data/data.*
+	  files--this didn't work on Darwin and MSWin32.
+	- Added calculate() method, which returns all
+	  probabilities. identify () now just calls calculate() and
+	  returns the most probable language.
+	- When neither a trigram nor a bigram is found, use the
+	  average alphabet size instead of the individual language's
+	  alphabet size, as this penalizes Asian languages.

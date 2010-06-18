@@ -1,12 +1,14 @@
 use ExtUtils::MakeMaker;
 
 WriteMakefile(
-    'NAME'         => 'Lingua::Ident',
-# $Format: "    'VERSION' => '$ProjectVersion$',"$
-    'VERSION' => '1.6',
-    'EXE_FILES'    => ['trainlid'],
-    'clean'        => {FILES    => 'data/data.*'},
-    'dist'         => {COMPRESS => 'gzip', SUFFIX => 'gz'},
+    'NAME'          => 'Lingua::Ident',
+    'AUTHOR'        => 'Michael Piotrowski <mxp@dynalabs.de>',
+    'VERSION_FROM'  => 'Ident.pm',
+    'ABSTRACT_FROM' => 'Ident.pm',
+    'LICENSE'       => 'perl',
+    'EXE_FILES'     => ['trainlid'],
+    'clean'         => {FILES    => 'data/data.*'},
+    'dist'          => {COMPRESS => 'gzip', SUFFIX => 'gz'},
 );
 
 package MY;
@@ -14,13 +16,15 @@ package MY;
 sub postamble
 {
    '
-DATA: data/sample.de data/sample.en data/sample.fr data/sample.it data/sample.ko data/sample.zh
-	$(PERL) trainlid de.iso-8859-1 < data/sample.de > data/data.de 2> /dev/null
-	$(PERL) trainlid en.iso-8859-1 < data/sample.en > data/data.en 2> /dev/null
-	$(PERL) trainlid fr.iso-8859-1 < data/sample.fr > data/data.fr 2> /dev/null
-	$(PERL) trainlid it.iso-8859-1 < data/sample.it > data/data.it 2> /dev/null
-	$(PERL) trainlid ko.eucKR      < data/sample.ko > data/data.ko 2> /dev/null
-	$(PERL) trainlid zh.big5       < data/sample.zh > data/data.zh 2> /dev/null
+DATA ::
+	$(PERL) trainlid -s de.iso-8859-1 < data/sample.de > data/data.de
+	$(PERL) trainlid -s de.utf-8      < data/sample.de.utf-8 > data/data.de.utf-8
+	$(PERL) trainlid -s en.iso-8859-1 < data/sample.en > data/data.en
+	$(PERL) trainlid -s fr.iso-8859-1 < data/sample.fr > data/data.fr
+	$(PERL) trainlid -s it.iso-8859-1 < data/sample.it > data/data.it
+	$(PERL) trainlid -s ko.eucKR      < data/sample.ko > data/data.ko
+	$(PERL) trainlid -s ko.utf-8      < data/sample.ko.utf-8 > data/data.ko.utf-8
+	$(PERL) trainlid -s zh.big5       < data/sample.zh > data/data.zh
 ';
 }
 
